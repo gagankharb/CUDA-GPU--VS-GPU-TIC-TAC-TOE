@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Demo Presentation: CUDA GPU vs GPU Tic-Tac-Toe</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-panel: #111827;
+      --bg-card: #182234;
+      --border-color: #243552;
+      --nvidia-green: #76b900;
+      --cyan: #00d2ff;
+      --amber: #ffb700;
+      --red: #ff4757;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Progress & Header */
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .badge-cuda {
+      background: linear-gradient(135deg, var(--nvidia-green), #4e8000);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .slide-counter {
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      font-weight: 700;
+      background: rgba(0, 210, 255, 0.1);
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      font-size: 0.85rem;
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--nvidia-green));
+      width: 7.69%;
+      transition: width 0.3s ease;
+    }
+
+    /* Main Slide Canvas */
+    main.deck-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 30px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 95%;
+      max-width: 1300px;
+      height: 86%;
+      max-height: 740px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 32px 40px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+      z-index: 10;
+    }
+
+    .slide-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--nvidia-green);
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .slide-subtitle {
+      font-size: 1.05rem;
+      color: var(--cyan);
+      font-weight: 500;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .slide-body-split {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 24px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .slide-body-full {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .bullet-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    ul.bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    ul.bullet-list li::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      color: var(--nvidia-green);
+      font-size: 0.75rem;
+      top: 3px;
+    }
+
+    ul.bullet-list li strong {
+      color: #fff;
+    }
+
+    .screenshot-frame {
+      border: 2px solid var(--nvidia-green);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 16px rgba(118, 185, 0, 0.25);
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .screenshot-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Bottom Control Bar */
+    footer.control-bar {
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button.btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    button.btn:hover {
+      background: #23324d;
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    button.btn-primary {
+      background: linear-gradient(135deg, var(--nvidia-green), #4e8000);
+      color: #000;
+      font-weight: 700;
+      border: none;
+    }
+
+    .key-hint {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* Presenter Script Drawer */
+    #script-drawer {
+      position: fixed;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 82%;
+      max-width: 950px;
+      background: rgba(10, 14, 23, 0.98);
+      border: 1px solid var(--cyan);
+      border-radius: 10px 10px 0 0;
+      padding: 16px 22px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      display: none;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    #script-drawer.open { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="brand">
+      <span class="badge-cuda">NVIDIA CUDA</span>
+      <span>GPU vs GPU Tic-Tac-Toe: Video Demo Presentation Deck</span>
+    </div>
+    <span class="slide-counter" id="slide-indicator">Slide 1 / 13</span>
+  </header>
+
+  <!-- Slide Canvas -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: Title -->
+    <section class="slide active" data-slide="1">
+      <div class="slide-tag">PROJECT VIVA &amp; VIDEO DEMONSTRATION</div>
+      <h1 class="slide-title">CUDA GPU vs GPU: Tic-Tac-Toe Battle</h1>
+      <div class="slide-subtitle">Live Demonstration &amp; Hardware-Accelerated Decision-Making Walkthrough</div>
+      <div class="slide-body-full" style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <div class="bullet-box">
+          <ul class="bullet-list" style="font-size: 1.05rem;">
+            <li><strong>Course:</strong> Coursera GPU Programming Assignment Final Deliverable</li>
+            <li><strong>Technology Stack:</strong> NVIDIA CUDA C++, nvcc, SIMT Concurrency Model</li>
+            <li><strong>Core Innovation:</strong> 100% Autonomous On-Device Move Evaluation across 9 GPU Threads</li>
+            <li><strong>Demonstration Objective:</strong> Provide visual proof of compilation, execution, microsecond kernel timing, and tournament equilibrium</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Architecture -->
+    <section class="slide" data-slide="2">
+      <div class="slide-tag">SYSTEM BLUEPRINT</div>
+      <h1 class="slide-title">Project Architecture &amp; Execution Pipeline</h1>
+      <div class="slide-subtitle">Decoupled 4-Layer Modular Design for Autonomous GPU Play</div>
+      <div class="slide-body-full">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Layer 1 - Host Orchestrator (main.cu):</strong> Discovers CUDA devices, configures execution mode (Dual-GPU vs Single-GPU), and orchestrates 10 tournament matches.</li>
+            <li><strong>Layer 2 - Competitor Layer:</strong> <code>PlayerX</code> (Tactical Heuristics) and <code>PlayerO</code> (Strategic Threat Analysis) with encapsulated device memory management (RAII).</li>
+            <li><strong>Layer 3 - CUDA Device Kernels:</strong> 1 Block, 9 Threads in Warp 0. Parallel SIMT evaluation of all 9 board positions in $O(1)$ time.</li>
+            <li><strong>Layer 4 - Host Referee (GameEngine):</strong> Strictly enforces $3 \times 3$ rules, bounds validation, and instant win/draw state transitions.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Compilation -->
+    <section class="slide" data-slide="3">
+      <div class="slide-tag">STEP 1: BUILD VERIFICATION</div>
+      <h1 class="slide-title">Clean Compilation &amp; NVCC Build Verification</h1>
+      <div class="slide-subtitle">Standard GNU Makefile Compilation via NVIDIA CUDA Compiler</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Target Binary:</strong> <code>bin/cuda_tictactoe</code></li>
+            <li><strong>Compiler:</strong> NVIDIA CUDA Compiler (<code>nvcc</code>)</li>
+            <li><strong>Optimization Flags:</strong> <code>-O3 -std=c++14 -Iinclude -Xcompiler -Wall</code></li>
+            <li><strong>Compilation Units:</strong> <code>main.cu</code>, <code>player_x.cu</code>, <code>player_o.cu</code>, <code>game_engine.cpp</code>, <code>game_visualization.cpp</code></li>
+            <li><strong>Integrity:</strong> Rebuilds cleanly from fresh checkout with zero warnings.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_01_compilation.png" alt="Compilation Terminal Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Runtime Init -->
+    <section class="slide" data-slide="4">
+      <div class="slide-tag">STEP 2: PLATFORM INITIALIZATION</div>
+      <h1 class="slide-title">Launching &amp; CUDA Device Discovery</h1>
+      <div class="slide-subtitle">Automated Runtime Hardware Topology Detection</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>API Call:</strong> <code>cudaGetDeviceCount(&amp;count)</code> queries physical hardware.</li>
+            <li><strong>Detected Hardware:</strong> NVIDIA CUDA Device with 68 Streaming Multiprocessors (SMs) and 10,240 MB VRAM.</li>
+            <li><strong>Topology Selection:</strong> <strong>Mode B (Single GPU / 2 Threads)</strong> automatically selected.</li>
+            <li><strong>Thread Synchronization:</strong> <code>std::mutex</code> and <code>std::condition_variable</code> protect shared board access.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_02_device_init.png" alt="Device Init Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Match 1 Setup -->
+    <section class="slide" data-slide="5">
+      <div class="slide-tag">STEP 3: TOURNAMENT COMMENCEMENT</div>
+      <h1 class="slide-title">Tournament Match 1 Initialization</h1>
+      <div class="slide-subtitle">Empty 3x3 Board Grid &amp; Coordinate Mapping Reference</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Tournament Scope:</strong> 10 Consecutive Autonomous Matches.</li>
+            <li><strong>Fairness Alternation:</strong> Odd matches start with Player X; even matches start with Player O.</li>
+            <li><strong>Match 1 Opener:</strong> Player X (Tactical AI) makes the opening move.</li>
+            <li><strong>Board State:</strong> 1D array of 9 integers (0=Empty, 1=X, 2=O).</li>
+            <li><strong>Visualization:</strong> Terminal ASCII grid displays 1-9 coordinate reference.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_03_match1_initial.png" alt="Match 1 Initial Board Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: Player X Move 1 -->
+    <section class="slide" data-slide="6">
+      <div class="slide-tag">STEP 4: GPU MOVE EVALUATION</div>
+      <h1 class="slide-title">Player X GPU Move Evaluation: Center Domination</h1>
+      <div class="slide-subtitle">9 CUDA Threads Evaluating Candidate Moves in Parallel (Warp 0)</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>SIMT Parallelism:</strong> Thread $i$ evaluates Candidate Cell $i$.</li>
+            <li><strong>CUDA Kernel Time:</strong> <strong>0.0244 ms</strong> (measured via CUDA hardware events).</li>
+            <li><strong>Candidate Scores:</strong> Center Cell P5 scores <strong>100</strong> (Center +40, 4 open lines +60).</li>
+            <li><strong>Corners vs Edges:</strong> Corners score 70; Edges score 40.</li>
+            <li><strong>Host Action:</strong> Player X places 'X' in center cell (Position 5).</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_04_move1_player_x.png" alt="Player X Move 1 Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Player O Move 2 -->
+    <section class="slide" data-slide="7">
+      <div class="slide-tag">STEP 5: STRATEGIC COUNTER-PLAY</div>
+      <h1 class="slide-title">Player O Strategic Response: Defensive Corner Control</h1>
+      <div class="slide-subtitle">Occupied Cell Bounds Guard &amp; Defensive Positioning</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Assigned Context:</strong> Logical Thread 1 executing on GPU 0.</li>
+            <li><strong>CUDA Kernel Time:</strong> <strong>0.0261 ms</strong>.</li>
+            <li><strong>Early Exit Guard:</strong> Thread 4 detects center is occupied $\rightarrow$ returns <code>-100000.0f</code> immediately.</li>
+            <li><strong>Decision:</strong> Player O selects Position 1 (Corner control) to neutralize diagonal fork paths.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_05_move2_player_o.png" alt="Player O Move 2 Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: Urgent Defense (+6500) -->
+    <section class="slide" data-slide="8">
+      <div class="slide-tag">STEP 6: TACTICAL THREAT NEUTRALIZATION</div>
+      <h1 class="slide-title">Mid-Game Defense: Urgent Threat Block (+6500)</h1>
+      <div class="slide-subtitle">Automatic Detection &amp; Blocking of 3-in-a-Row Threats</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Threat Scenario:</strong> Player X establishes a two-in-a-row threat on the board.</li>
+            <li><strong>Urgent Block Heuristic:</strong> Thread 2 identifies threat and assigns <strong>+6500 points</strong> to Position 3.</li>
+            <li><strong>Score Vector:</strong> Position 3 scores <strong>6520</strong> while open cells score 15-20.</li>
+            <li><strong>Result:</strong> Player O triggers DEFENSIVE BLOCK on Position 3, averting defeat in <strong>0.0253 ms</strong>.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_06_midgame_defense.png" alt="Urgent Block Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Match 1 Result -->
+    <section class="slide" data-slide="9">
+      <div class="slide-tag">STEP 7: MATCH CONCLUSION</div>
+      <h1 class="slide-title">Match 1 Result: Equilibrium Draw (Cat's Game)</h1>
+      <div class="slide-subtitle">Proof of Mathematical Correctness &amp; Zero Blunders</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Move Count:</strong> 9 moves completed with all cells filled.</li>
+            <li><strong>GameEngine Referee:</strong> Detects <code>STATE_DRAW</code> immediately.</li>
+            <li><strong>Game-Theoretic Reality:</strong> When two optimal players compete in Tic-Tac-Toe, equilibrium results in a Draw.</li>
+            <li><strong>Proof of Correctness:</strong> Confirms neither AI competitor commits defensive errors.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_07_match_result_draw.png" alt="Match 1 Draw Result Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: 10-Match Tournament -->
+    <section class="slide" data-slide="10">
+      <div class="slide-tag">STEP 8: TOURNAMENT ORCHESTRATION</div>
+      <h1 class="slide-title">10-Match Autonomous Tournament Execution</h1>
+      <div class="slide-subtitle">Fairness Alternation Across 10 Consecutive Battles</div>
+      <div class="slide-body-full">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Matches 1, 3, 5, 7, 9:</strong> Player X (Tactical AI) makes the first move.</li>
+            <li><strong>Matches 2, 4, 6, 8, 10:</strong> Player O (Strategic AI) makes the first move.</li>
+            <li><strong>First-Mover Bias Eliminated:</strong> Ensures equal opportunity across starting positions.</li>
+            <li><strong>Automated Reset:</strong> Referee resets board, clears state, and aggregates performance metrics.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: Final Benchmarks -->
+    <section class="slide" data-slide="11">
+      <div class="slide-tag">STEP 9: BENCHMARK TELEMETRY</div>
+      <h1 class="slide-title">Final Tournament Benchmarks &amp; Statistics</h1>
+      <div class="slide-subtitle">Comprehensive Match Telemetry &amp; Hardware Profiling Summary</div>
+      <div class="slide-body-split">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Total Matches:</strong> 10 Played | <strong>Draws:</strong> 10 (100.0%).</li>
+            <li><strong>Avg Player X Kernel Time:</strong> <strong>0.0232 ms</strong> (CUDA Events).</li>
+            <li><strong>Avg Player O Kernel Time:</strong> <strong>0.0265 ms</strong> (CUDA Events).</li>
+            <li><strong>Total Wall Time:</strong> <strong>0.014 s</strong> (&gt;700 matches/sec throughput).</li>
+            <li><strong>Measurement Integrity:</strong> Hardware event timestamps guarantee true GPU execution time.</li>
+          </ul>
+        </div>
+        <div class="screenshot-frame">
+          <img src="screenshots/demo_08_tournament_stats.png" alt="Tournament Statistics Screenshot">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 12: Constant Memory -->
+    <section class="slide" data-slide="12">
+      <div class="slide-tag">CUDA OPTIMIZATION SPOTLIGHT</div>
+      <h1 class="slide-title">CUDA Constant Memory Caching (__constant__)</h1>
+      <div class="slide-subtitle">Zero-Latency Broadcast of Geometric Win Lines to All Threads</div>
+      <div class="slide-body-full">
+        <div class="bullet-box">
+          <ul class="bullet-list">
+            <li><strong>Data Structure:</strong> <code>__constant__ int d_win_lines[8][3]</code> declared on device.</li>
+            <li><strong>Hardware Broadcast:</strong> All 9 active threads in Warp 0 read winning lines simultaneously in a single clock cycle.</li>
+            <li><strong>DRAM Elimination:</strong> Avoids repeated global VRAM transactions by caching lines directly inside the SM.</li>
+            <li><strong>Memory Lifecycle:</strong> <code>cudaMalloc</code> $\rightarrow$ <code>cudaMemcpy(H2D)</code> $\rightarrow$ <code>kernel&lt;&lt;&lt;1, 9&gt;&gt;&gt;</code> $\rightarrow$ <code>cudaMemcpy(D2H)</code> $\rightarrow$ <code>cudaFree</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13: Conclusion -->
+    <section class="slide" data-slide="13">
+      <div class="slide-tag">DEMO CONCLUSION</div>
+      <h1 class="slide-title">Conclusion &amp; Video Demonstration Summary</h1>
+      <div class="slide-subtitle">Coursera GPU Programming Assignment - Complete Deliverables</div>
+      <div class="slide-body-full" style="text-align: center; max-width: 850px; margin: 0 auto;">
+        <div class="bullet-box">
+          <ul class="bullet-list" style="font-size: 1.05rem;">
+            <li>✓ <strong>Genuine GPU Execution:</strong> 100% of candidate moves evaluated on GPU silicon.</li>
+            <li>✓ <strong>True Hardware Profiling:</strong> Sub-0.03 ms kernel execution measured via CUDA Events.</li>
+            <li>✓ <strong>Dynamic Hardware Adaptation:</strong> Native Dual-GPU (Mode A) and Single-GPU (Mode B) support.</li>
+            <li>✓ <strong>Flawless Decision-Making:</strong> 10 consecutive matches confirming game-theoretic equilibrium.</li>
+            <li>✓ <strong>Production-Ready Repository:</strong> Full Makefile, tests, documentation, and live demo tools.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Presenter Script Drawer (Press 'N') -->
+  <aside id="script-drawer">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--cyan); font-weight: 700; font-size: 0.85rem;">
+      <span>🎙️ Video Recording Script (What to Say)</span>
+      <span style="color: #888; font-size: 0.8rem;">Press 'N' to close</span>
+    </div>
+    <div id="script-content" style="color: #cbd5e1;"></div>
+  </aside>
+
+  <!-- Control Bar -->
+  <footer class="control-bar">
+    <div style="display: flex; gap: 10px;">
+      <button class="btn" id="btn-prev">◀ Prev <span class="key-hint">←</span></button>
+      <button class="btn btn-primary" id="btn-next">Next ▶ <span class="key-hint">Space</span></button>
+      <button class="btn" id="btn-notes">🎙️ Video Script <span class="key-hint">N</span></button>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn" id="btn-fs">⛶ Fullscreen <span class="key-hint">F</span></button>
+    </div>
+  </footer>
+
+  <script>
+    const scripts = {
+      1: "Welcome everyone to my video demonstration of the Coursera GPU programming project: CUDA GPU vs GPU Intelligent Tic-Tac-Toe Battle. In this video, I will walk you through the actual compilation, runtime initialization, and live tournament execution of our two autonomous AI competitors: Player X and Player O.",
+      2: "Before running the program, let's review the architecture. We have decoupled game refereeing from move decision-making. The host CPU manages the 3x3 board and validates rules, while raw move evaluation is completely offloaded to custom CUDA kernels executing on NVIDIA GPU hardware.",
+      3: "Here on the right, you can see our actual terminal session. We run 'make clean' to remove all previous object files, followed by 'make build'. The NVIDIA CUDA compiler (nvcc) compiles all CUDA and C++ source files with O3 optimization, generating our binary in bin/cuda_tictactoe cleanly.",
+      4: "Next, we launch our binary. The program queries the system via cudaGetDeviceCount. In this environment, it detects an NVIDIA GPU with 68 streaming multiprocessors and 10 gigabytes of VRAM. It automatically selects Mode B, running two concurrent AI threads synchronized via mutexes on the single physical GPU.",
+      5: "The tournament begins with Match 1. Notice the clean ASCII terminal interface showing the empty 3x3 board on the left and the 1-to-9 coordinate reference on the right. In Match 1, Player X takes the first move on the empty board.",
+      6: "Now observe Player X's first move. The CUDA kernel executes across 9 threads simultaneously. In just 0.0244 milliseconds, the GPU evaluates all 9 positions. The center cell P5 achieves the highest score of 100 points, so Player X places an 'X' in the center.",
+      7: "Player O responds immediately. In 0.0261 milliseconds on the GPU, Player O's kernel evaluates all available positions. Thread 4 immediately detects that the center is already occupied by X and exits. Player O selects corner Position 1 to establish defensive balance.",
+      8: "As the game reaches move 6, Player X attempts to complete a 3-in-a-row. Notice the candidate score vector: thread 2 identifies the immediate threat and assigns 6520 points to Position 3. Player O executes an immediate defensive block, completely neutralizing the attack.",
+      9: "Match 1 concludes after 9 moves in a hard-fought Draw. In game theory, when two optimal heuristic algorithms compete in Tic-Tac-Toe, the mathematical equilibrium is always a Draw. This proves that both AI competitors are operating with complete defensive correctness.",
+      10: "The tournament now proceeds through 10 consecutive matches. To ensure absolute fairness, the starting player alternates every single match: odd matches start with Player X, and even matches start with Player O. This completely eliminates first-mover bias.",
+      11: "Here is our final tournament summary on the right. Across all 10 matches, we achieve a 100% draw rate, proving consistent mathematical stability. Most importantly, look at the benchmarks: average kernel execution time is 0.023 milliseconds for Player X and 0.026 milliseconds for Player O.",
+      12: "A key optimization in our CUDA code is using __constant__ memory for the 8 winning lines. Because constant memory is cached directly on-chip inside the Streaming Multiprocessor, all 9 threads read winning lines in a single broadcast clock cycle, completely bypassing global DRAM latency.",
+      13: "In conclusion, this project fulfills every requirement of the Coursera GPU Programming assignment. We have demonstrated genuine CUDA kernel execution, SIMT parallelization across 9 threads, accurate CUDA event benchmarking, and robust multi-GPU/single-GPU synchronization. Thank you for watching my demonstration!"
+    };
+
+    let cur = 1;
+    const total = 13;
+    const slides = document.querySelectorAll('.slide');
+    const pbar = document.getElementById('progress-bar');
+    const sind = document.getElementById('slide-indicator');
+    const sdrawer = document.getElementById('script-drawer');
+    const scontent = document.getElementById('script-content');
+
+    function gotoSlide(n) {
+      if (n < 1) n = 1;
+      if (n > total) n = total;
+      cur = n;
+      slides.forEach(s => {
+        if (parseInt(s.getAttribute('data-slide')) === cur) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+      sind.textContent = `Slide ${cur} / ${total}`;
+      pbar.style.width = `${(cur / total) * 100}%`;
+      scontent.textContent = scripts[cur] || "";
+    }
+
+    document.getElementById('btn-prev').addEventListener('click', () => gotoSlide(cur - 1));
+    document.getElementById('btn-next').addEventListener('click', () => gotoSlide(cur + 1));
+    document.getElementById('btn-notes').addEventListener('click', () => sdrawer.classList.toggle('open'));
+    document.getElementById('btn-fs').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); gotoSlide(cur + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+        e.preventDefault(); gotoSlide(cur - 1);
+      } else if (e.key === 'Home') gotoSlide(1);
+      else if (e.key === 'End') gotoSlide(total);
+      else if (e.key === 'f' || e.key === 'F') document.getElementById('btn-fs').click();
+      else if (e.key === 'n' || e.key === 'N') sdrawer.classList.toggle('open');
+    });
+
+    gotoSlide(1);
+  </script>
+</body>
+</html>

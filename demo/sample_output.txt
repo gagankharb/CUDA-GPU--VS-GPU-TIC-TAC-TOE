@@ -1,0 +1,1676 @@
+======================================================================
+          CUDA GPU VS GPU INTELLIGENT TIC-TAC-TOE BATTLE         
+           High-Performance Parallel AI Game Simulation           
+======================================================================
+
+[CUDA PLATFORM INITIALIZATION]
+  Detected CUDA Devices : 1
+  [GPU 0] NVIDIA GeForce RTX 3080 (Compute 8.6) | SMs: 68 | VRAM: 10240 MB
+  Execution Mode        : MODE B - SINGLE PHYSICAL GPU (Two Concurrent AI Threads)
+                          Player X Assigned -> Logical Thread 0 (GPU 0)
+                          Player O Assigned -> Logical Thread 1 (GPU 0)
+                          Synchronization   -> std::mutex + std::condition_variable
+
+[COMPETITOR PROFILES]
+  Player X : Tactical CUDA AI
+             Strategy: Immediate Win > Opponent Block > Center > Corners > Open Lines
+  Player O : Strategic CUDA AI
+             Strategy: Immediate Win > Opponent Block > Fork Creation > Fork Prevention
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 1 OF 10
+                Starting Player: Player X (Tactical)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0244 ms
+   Parallel Candidate Scores  : [P1:70 | P2:40 | P3:70 | P4:40 | P5:100 | P6:40 | P7:70 | P8:40 | P9:70]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0213 ms
+   Parallel Candidate Scores  : [P1:65 | P2:60 | P3:65 | P4:60 | P5:occ | P6:60 | P7:65 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0208 ms
+   Parallel Candidate Scores  : [P1:occ | P2:57 | P3:87 | P4:57 | P5:occ | P6:60 | P7:87 | P8:60 | P9:55]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0239 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:245 | P5:occ | P6:2905 | P7:6705 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0254 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:5045 | P5:occ | P6:80 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0298 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:occ | P5:occ | P6:6560 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0269 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:57 | P9:37]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0221 ms
+   Parallel Candidate Scores  : [P1:occ | P2:6515 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0222 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |  X                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 2 OF 10
+                Starting Player: Player O (Strategic)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0214 ms
+   Parallel Candidate Scores  : [P1:20 | P2:15 | P3:20 | P4:15 | P5:45 | P6:15 | P7:20 | P8:15 | P9:20]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0202 ms
+   Parallel Candidate Scores  : [P1:67 | P2:37 | P3:67 | P4:37 | P5:occ | P6:37 | P7:67 | P8:37 | P9:67]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0276 ms
+   Parallel Candidate Scores  : [P1:occ | P2:245 | P3:250 | P4:245 | P5:occ | P6:200 | P7:250 | P8:200 | P9:20]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0183 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:57 | P5:occ | P6:34 | P7:5075 | P8:37 | P9:52]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0236 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:6700 | P5:occ | P6:3585 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0245 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:occ | P5:occ | P6:5022 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0281 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:245 | P9:65]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0202 ms
+   Parallel Candidate Scores  : [P1:occ | P2:5010 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0287 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |  O                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 3 OF 10
+                Starting Player: Player X (Tactical)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0261 ms
+   Parallel Candidate Scores  : [P1:70 | P2:40 | P3:70 | P4:40 | P5:100 | P6:40 | P7:70 | P8:40 | P9:70]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0211 ms
+   Parallel Candidate Scores  : [P1:65 | P2:60 | P3:65 | P4:60 | P5:occ | P6:60 | P7:65 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0261 ms
+   Parallel Candidate Scores  : [P1:occ | P2:57 | P3:87 | P4:57 | P5:occ | P6:60 | P7:87 | P8:60 | P9:55]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0301 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:245 | P5:occ | P6:2905 | P7:6705 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0214 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:5045 | P5:occ | P6:80 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0230 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:occ | P5:occ | P6:6560 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0276 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:57 | P9:37]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0254 ms
+   Parallel Candidate Scores  : [P1:occ | P2:6515 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0189 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |  X                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 4 OF 10
+                Starting Player: Player O (Strategic)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0223 ms
+   Parallel Candidate Scores  : [P1:20 | P2:15 | P3:20 | P4:15 | P5:45 | P6:15 | P7:20 | P8:15 | P9:20]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0265 ms
+   Parallel Candidate Scores  : [P1:67 | P2:37 | P3:67 | P4:37 | P5:occ | P6:37 | P7:67 | P8:37 | P9:67]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0288 ms
+   Parallel Candidate Scores  : [P1:occ | P2:245 | P3:250 | P4:245 | P5:occ | P6:200 | P7:250 | P8:200 | P9:20]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0261 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:57 | P5:occ | P6:34 | P7:5075 | P8:37 | P9:52]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0305 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:6700 | P5:occ | P6:3585 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0234 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:occ | P5:occ | P6:5022 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0337 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:245 | P9:65]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0218 ms
+   Parallel Candidate Scores  : [P1:occ | P2:5010 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0282 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |  O                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 5 OF 10
+                Starting Player: Player X (Tactical)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0263 ms
+   Parallel Candidate Scores  : [P1:70 | P2:40 | P3:70 | P4:40 | P5:100 | P6:40 | P7:70 | P8:40 | P9:70]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0290 ms
+   Parallel Candidate Scores  : [P1:65 | P2:60 | P3:65 | P4:60 | P5:occ | P6:60 | P7:65 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0266 ms
+   Parallel Candidate Scores  : [P1:occ | P2:57 | P3:87 | P4:57 | P5:occ | P6:60 | P7:87 | P8:60 | P9:55]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0285 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:245 | P5:occ | P6:2905 | P7:6705 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0250 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:5045 | P5:occ | P6:80 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0216 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:occ | P5:occ | P6:6560 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0203 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:57 | P9:37]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0248 ms
+   Parallel Candidate Scores  : [P1:occ | P2:6515 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0188 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |  X                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 6 OF 10
+                Starting Player: Player O (Strategic)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0240 ms
+   Parallel Candidate Scores  : [P1:20 | P2:15 | P3:20 | P4:15 | P5:45 | P6:15 | P7:20 | P8:15 | P9:20]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0190 ms
+   Parallel Candidate Scores  : [P1:67 | P2:37 | P3:67 | P4:37 | P5:occ | P6:37 | P7:67 | P8:37 | P9:67]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0246 ms
+   Parallel Candidate Scores  : [P1:occ | P2:245 | P3:250 | P4:245 | P5:occ | P6:200 | P7:250 | P8:200 | P9:20]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0244 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:57 | P5:occ | P6:34 | P7:5075 | P8:37 | P9:52]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0257 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:6700 | P5:occ | P6:3585 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0217 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:occ | P5:occ | P6:5022 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0237 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:245 | P9:65]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0207 ms
+   Parallel Candidate Scores  : [P1:occ | P2:5010 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0332 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |  O                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 7 OF 10
+                Starting Player: Player X (Tactical)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0245 ms
+   Parallel Candidate Scores  : [P1:70 | P2:40 | P3:70 | P4:40 | P5:100 | P6:40 | P7:70 | P8:40 | P9:70]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0289 ms
+   Parallel Candidate Scores  : [P1:65 | P2:60 | P3:65 | P4:60 | P5:occ | P6:60 | P7:65 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0197 ms
+   Parallel Candidate Scores  : [P1:occ | P2:57 | P3:87 | P4:57 | P5:occ | P6:60 | P7:87 | P8:60 | P9:55]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0305 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:245 | P5:occ | P6:2905 | P7:6705 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0196 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:5045 | P5:occ | P6:80 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0259 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:occ | P5:occ | P6:6560 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0279 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:57 | P9:37]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0293 ms
+   Parallel Candidate Scores  : [P1:occ | P2:6515 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0236 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |  X                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 8 OF 10
+                Starting Player: Player O (Strategic)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0299 ms
+   Parallel Candidate Scores  : [P1:20 | P2:15 | P3:20 | P4:15 | P5:45 | P6:15 | P7:20 | P8:15 | P9:20]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0264 ms
+   Parallel Candidate Scores  : [P1:67 | P2:37 | P3:67 | P4:37 | P5:occ | P6:37 | P7:67 | P8:37 | P9:67]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0311 ms
+   Parallel Candidate Scores  : [P1:occ | P2:245 | P3:250 | P4:245 | P5:occ | P6:200 | P7:250 | P8:200 | P9:20]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0203 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:57 | P5:occ | P6:34 | P7:5075 | P8:37 | P9:52]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0214 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:6700 | P5:occ | P6:3585 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0212 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:occ | P5:occ | P6:5022 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0245 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:245 | P9:65]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0201 ms
+   Parallel Candidate Scores  : [P1:occ | P2:5010 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0333 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |  O                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 9 OF 10
+                Starting Player: Player X (Tactical)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0268 ms
+   Parallel Candidate Scores  : [P1:70 | P2:40 | P3:70 | P4:40 | P5:100 | P6:40 | P7:70 | P8:40 | P9:70]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0251 ms
+   Parallel Candidate Scores  : [P1:65 | P2:60 | P3:65 | P4:60 | P5:occ | P6:60 | P7:65 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0246 ms
+   Parallel Candidate Scores  : [P1:occ | P2:57 | P3:87 | P4:57 | P5:occ | P6:60 | P7:87 | P8:60 | P9:55]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0261 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:245 | P5:occ | P6:2905 | P7:6705 | P8:60 | P9:65]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0271 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:5045 | P5:occ | P6:80 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0270 ms
+   Parallel Candidate Scores  : [P1:occ | P2:60 | P3:occ | P4:occ | P5:occ | P6:6560 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0206 ms
+   Parallel Candidate Scores  : [P1:occ | P2:45 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:57 | P9:37]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |     |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0242 ms
+   Parallel Candidate Scores  : [P1:occ | P2:6515 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0236 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          O  |  O  |  X                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  X  |  O                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  X  |  X                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+----------------------------------------------------------------------
+                      MATCH 10 OF 10
+                Starting Player: Player O (Strategic)
+----------------------------------------------------------------------
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0244 ms
+   Parallel Candidate Scores  : [P1:20 | P2:15 | P3:20 | P4:15 | P5:45 | P6:15 | P7:20 | P8:15 | P9:20]
+   >> SELECTED POSITION       : 5 (Index 4)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+             |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0238 ms
+   Parallel Candidate Scores  : [P1:67 | P2:37 | P3:67 | P4:37 | P5:occ | P6:37 | P7:67 | P8:37 | P9:67]
+   >> SELECTED POSITION       : 1 (Index 0)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |                    1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0327 ms
+   Parallel Candidate Scores  : [P1:occ | P2:245 | P3:250 | P4:245 | P5:occ | P6:200 | P7:250 | P8:200 | P9:20]
+   >> SELECTED POSITION       : 3 (Index 2)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0220 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:57 | P5:occ | P6:34 | P7:5075 | P8:37 | P9:52]
+   >> SELECTED POSITION       : 7 (Index 6)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+             |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0239 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:6700 | P5:occ | P6:3585 | P7:occ | P8:245 | P9:250]
+   >> SELECTED POSITION       : 4 (Index 3)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |                    4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0280 ms
+   Parallel Candidate Scores  : [P1:occ | P2:22 | P3:occ | P4:occ | P5:occ | P6:5022 | P7:occ | P8:57 | P9:72]
+   >> SELECTED POSITION       : 6 (Index 5)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |     |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0276 ms
+   Parallel Candidate Scores  : [P1:occ | P2:200 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:245 | P9:65]
+   >> SELECTED POSITION       : 8 (Index 7)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |     |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player X (Tactical CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0189 ms
+   Parallel Candidate Scores  : [P1:occ | P2:5010 | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:25]
+   >> SELECTED POSITION       : 2 (Index 1)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |                    7  |  8  |  9    
+             |     |                        |     |       
+
+>> Player O (Strategic CUDA AI) [GPU 0] evaluated moves in parallel:
+   CUDA Kernel Execution Time : 0.0216 ms
+   Parallel Candidate Scores  : [P1:occ | P2:occ | P3:occ | P4:occ | P5:occ | P6:occ | P7:occ | P8:occ | P9:20]
+   >> SELECTED POSITION       : 9 (Index 8)
+
+         Current Board State            Position Reference
+             |     |                        |     |       
+          X  |  X  |  O                 1  |  2  |  3    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          O  |  O  |  X                 4  |  5  |  6    
+        _____|_____|_____              _____|_____|_____
+             |     |                        |     |       
+          X  |  O  |  O                 7  |  8  |  9    
+             |     |                        |     |       
+
+----------------------- MATCH RESULT -------------------------
+   RESULT : DRAW (Cat's Game) after 9 moves!
+--------------------------------------------------------------
+
+======================================================================
+                 FINAL TOURNAMENT MATCH STATISTICS               
+======================================================================
+  Total Matches Played               : 10
+  Player X Wins (Tactical)           : 0 (0.0%)
+  Player O Wins (Strategic)          : 0 (0.0%)
+  Draws (Ties)                       : 10 (100.0%)
+----------------------------------------------------------------------
+  CUDA KERNEL & SYSTEM EXECUTION BENCHMARKS:
+  Avg Player X Kernel Time           : 0.0232 ms
+  Avg Player O Kernel Time           : 0.0265 ms
+  Total Game Execution Time          : 0.014 s
+======================================================================
+  Note: Kernel timings measured via cudaEventRecord / cudaEventElapsedTime.
+  Host coordination & terminal visualization time is reported separately.
+======================================================================

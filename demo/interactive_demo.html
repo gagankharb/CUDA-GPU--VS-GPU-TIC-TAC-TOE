@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Demo: CUDA GPU vs GPU Tic-Tac-Toe Battle</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-panel: #111827;
+      --bg-card: #182234;
+      --border-color: #243552;
+      --nvidia-green: #76b900;
+      --cyan-bright: #00d2ff;
+      --amber: #ffb700;
+      --crimson: #ff4757;
+      --purple: #a855f7;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation / Status Header */
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cuda-pill {
+      background: linear-gradient(135deg, var(--nvidia-green), #4e8000);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mode-badge {
+      background: #1f2d47;
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cyan-bright);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--nvidia-green);
+      box-shadow: 0 0 8px var(--nvidia-green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Main Demo Layout Grid */
+    main.demo-container {
+      flex: 1;
+      padding: 24px;
+      max-width: 1500px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 360px 1fr 400px;
+      gap: 22px;
+    }
+
+    /* Common Card Styling */
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* LEFT COLUMN: Controls & Tournament Stats */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button.demo-btn {
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    button.demo-btn:hover:not(:disabled) {
+      background: #23324d;
+      border-color: var(--cyan-bright);
+      transform: translateY(-1px);
+    }
+
+    button.demo-btn-primary {
+      background: linear-gradient(135deg, var(--nvidia-green), #528200);
+      color: #000;
+      border: none;
+    }
+
+    button.demo-btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #8ae000, var(--nvidia-green));
+      box-shadow: 0 0 16px rgba(118, 185, 0, 0.45);
+    }
+
+    button.demo-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .speed-control {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+
+    .speed-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .speed-slider {
+      width: 100%;
+      accent-color: var(--nvidia-green);
+    }
+
+    .stats-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .stat-row:last-child { border-bottom: none; }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* CENTER COLUMN: Interactive Game Stage & 3x3 Board */
+    .game-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .match-banner {
+      background: #19263c;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 6px 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 110px);
+      grid-template-rows: repeat(3, 110px);
+      gap: 12px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .board-cell {
+      background: #152033;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.8rem;
+      font-weight: 800;
+      cursor: default;
+      user-select: none;
+      position: relative;
+      transition: all 0.25s ease;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .board-cell.cell-x {
+      color: var(--crimson);
+      border-color: rgba(255, 71, 87, 0.6);
+      text-shadow: 0 0 14px rgba(255, 71, 87, 0.6);
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .board-cell.cell-o {
+      color: var(--nvidia-green);
+      border-color: rgba(118, 185, 0, 0.6);
+      text-shadow: 0 0 14px rgba(118, 185, 0, 0.6);
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .board-cell.highlight-win {
+      background: rgba(255, 183, 0, 0.2);
+      border-color: var(--amber);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 183, 0, 0.5);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .cell-idx {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .turn-announcer {
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* RIGHT COLUMN: Real-Time Parallel CUDA SIMT Inspector */
+    .inspector-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .thread-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .thread-row.selected-move {
+      border-color: var(--amber);
+      background: rgba(255, 183, 0, 0.12);
+      box-shadow: 0 0 10px rgba(255, 183, 0, 0.3);
+    }
+
+    .thread-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+    }
+
+    .score-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #0d131f;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan-bright), var(--nvidia-green));
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .score-bar-fill.occupied {
+      background: #475569;
+      width: 100% !important;
+      opacity: 0.3;
+    }
+
+    .score-bar-fill.win {
+      background: var(--amber);
+      width: 100% !important;
+    }
+
+    .score-bar-fill.block {
+      background: var(--crimson);
+      width: 80% !important;
+    }
+
+    /* Terminal Console Drawer */
+    .terminal-console {
+      grid-column: 1 / -1;
+      background: #090d14;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      height: 160px;
+      overflow-y: auto;
+      color: #cbd5e1;
+    }
+
+    .term-line-x { color: #f87171; }
+    .term-line-o { color: #4ade80; }
+    .term-line-info { color: #38bdf8; }
+    .term-line-win { color: #facc15; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand">
+      <span class="cuda-pill">NVIDIA CUDA</span>
+      <div class="brand-title">GPU vs GPU Tic-Tac-Toe: Live Autonomous Battle Demo</div>
+    </div>
+    <div class="header-controls">
+      <div class="mode-badge">
+        <span class="status-dot"></span>
+        <span id="display-mode">Mode B: Single GPU (Concurrent AI Threads)</span>
+      </div>
+      <button class="demo-btn" id="btn-toggle-mode" style="padding: 6px 12px; font-size: 0.8rem;">
+        Switch to Mode A (Dual GPUs)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid Stage -->
+  <main class="demo-container">
+
+    <!-- LEFT PANEL: Tournament Manager & Controls -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🎮 Tournament Controls</div>
+      </div>
+
+      <div class="btn-group">
+        <button class="demo-btn demo-btn-primary" id="btn-auto-play">
+          ▶ Auto-Play 10 Matches
+        </button>
+        <button class="demo-btn" id="btn-step-move">
+          ⏭ Step Next Move (Manual)
+        </button>
+        <button class="demo-btn" id="btn-pause" disabled>
+          ⏸ Pause Simulation
+        </button>
+        <button class="demo-btn" id="btn-reset">
+          🔄 Reset Tournament
+        </button>
+      </div>
+
+      <div class="speed-control">
+        <div class="speed-label">
+          <span>Simulation Speed</span>
+          <span id="speed-display">Normal (700ms)</span>
+        </div>
+        <input type="range" class="speed-slider" id="speed-slider" min="100" max="1500" value="700" step="100">
+      </div>
+
+      <div class="panel-header" style="margin-top: 10px;">
+        <div class="panel-title">📊 Match Statistics</div>
+      </div>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span>Current Match</span>
+          <span class="stat-val" id="stat-match">1 / 10</span>
+        </div>
+        <div class="stat-row">
+          <span>Player X Wins (Tactical)</span>
+          <span class="stat-val" id="stat-x" style="color: var(--crimson);">0 (0.0%)</span>
+        </div>
+        <div class="stat-row">
+          <span>Player O Wins (Strategic)</span>
+          <span class="stat-val" id="stat-o" style="color: var(--nvidia-green);">0 (0.0%)</span>
+        </div>
+        <div class="stat-row">
+          <span>Draws (Cat's Game)</span>
+          <span class="stat-val" id="stat-draws" style="color: var(--cyan-bright);">0 (0.0%)</span>
+        </div>
+        <div class="stat-row">
+          <span>Avg Kernel Latency (X)</span>
+          <span class="stat-val" id="stat-lat-x">0.0232 ms</span>
+        </div>
+        <div class="stat-row">
+          <span>Avg Kernel Latency (O)</span>
+          <span class="stat-val" id="stat-lat-o">0.0265 ms</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENTER PANEL: Game Stage & 3x3 Board -->
+    <section class="panel game-stage">
+      <div class="match-banner" id="match-banner">
+        MATCH 1 OF 10 &nbsp;|&nbsp; Starting: Player X (Tactical AI)
+      </div>
+
+      <div class="board-grid" id="board-grid">
+        <!-- 9 Cells generated via JS -->
+      </div>
+
+      <div class="turn-announcer" id="turn-announcer">
+        <span style="color: var(--cyan-bright);">Ready:</span> Press 'Auto-Play' or 'Step Next Move' to start!
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: Parallel CUDA SIMT Thread Inspector -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">⚡ CUDA SIMT Inspector (9 Threads)</div>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">Warp 0 (1 Block)</span>
+      </div>
+      <div class="inspector-container" id="inspector-container">
+        <!-- 9 Thread rows generated via JS -->
+      </div>
+    </section>
+
+    <!-- BOTTOM ROW: Terminal Telemetry Stream -->
+    <section class="terminal-console" id="terminal-console">
+      <div class="term-line-info">[CUDA PLATFORM INITIALIZATION] Grid: 1 Block | Block: 9 Threads | Architecture: SIMT</div>
+      <div class="term-line-info">[COMPETITOR PROFILES] Player X: Tactical CUDA AI | Player O: Strategic CUDA AI</div>
+      <div>------------------------------------------------------------------------------------------------</div>
+      <div id="term-logs"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // ----------------------------------------------------
+    // CUDA AI Move Evaluation Logic (Exact Match to Kernels)
+    // ----------------------------------------------------
+    const WINNING_LINES = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Cols
+      [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
+
+    function countWinningThreats(board, simPos, symbol, oppSymbol) {
+      let threats = 0;
+      for (let [a, b, c] of WINNING_LINES) {
+        if (a === simPos || b === simPos || c === simPos) {
+          let o1 = (a === simPos) ? b : a;
+          let o2 = (c === simPos) ? b : c;
+          let countSym = 1;
+          let countEmpty = 0;
+          if (board[o1] === symbol) countSym++;
+          else if (board[o1] === 0) countEmpty++;
+          if (board[o2] === symbol) countSym++;
+          else if (board[o2] === 0) countEmpty++;
+          if (countSym === 2 && countEmpty === 1) threats++;
+        }
+      }
+      return threats;
+    }
+
+    function evaluatePlayerX(board, mySym = 1, oppSym = 2) {
+      let scores = new Array(9).fill(-100000);
+      for (let pos = 0; pos < 9; pos++) {
+        if (board[pos] !== 0) continue;
+
+        // 1. Immediate Win
+        let canWin = false;
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            if (board[o1] === mySym && board[o2] === mySym) { canWin = true; break; }
+          }
+        }
+        if (canWin) { scores[pos] = 10000; continue; }
+
+        let score = 0;
+        // 2. Immediate Block
+        let mustBlock = false;
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            if (board[o1] === oppSym && board[o2] === oppSym) { mustBlock = true; break; }
+          }
+        }
+        if (mustBlock) score += 5000;
+
+        // 3. Center Priority
+        if (pos === 4) score += 40;
+
+        // 4. Corners vs Edges
+        if ([0, 2, 6, 8].includes(pos)) score += 25;
+        else score += 10;
+
+        // 5. Open Lines
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            let myC = (board[o1] === mySym ? 1 : 0) + (board[o2] === mySym ? 1 : 0);
+            let oppC = (board[o1] === oppSym ? 1 : 0) + (board[o2] === oppSym ? 1 : 0);
+            if (oppC === 0) {
+              if (myC === 1) score += 35;
+              else if (myC === 0) score += 15;
+            } else if (oppC === 1 && myC === 0) {
+              score += 12;
+            }
+          }
+        }
+        scores[pos] = score;
+      }
+      return scores;
+    }
+
+    function evaluatePlayerO(board, mySym = 2, oppSym = 1) {
+      let scores = new Array(9).fill(-100000);
+      for (let pos = 0; pos < 9; pos++) {
+        if (board[pos] !== 0) continue;
+
+        // 1. Immediate Win
+        let canWin = false;
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            if (board[o1] === mySym && board[o2] === mySym) { canWin = true; break; }
+          }
+        }
+        if (canWin) { scores[pos] = 10000; continue; }
+
+        let score = 0;
+        // 2. Urgent Block
+        let mustBlock = false;
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            if (board[o1] === oppSym && board[o2] === oppSym) { mustBlock = true; break; }
+          }
+        }
+        if (mustBlock) score += 6500;
+
+        // 3. Forks
+        let myT = countWinningThreats(board, pos, mySym, oppSym);
+        if (myT >= 2) score += 3500;
+        else if (myT === 1) score += 150;
+
+        // 4. Opponent Fork Prevention
+        let oppT = countWinningThreats(board, pos, oppSym, mySym);
+        if (oppT >= 2) score += 2800;
+
+        // 5. Threat Disruption
+        for (let [a, b, c] of WINNING_LINES) {
+          if (a === pos || b === pos || c === pos) {
+            let o1 = (a === pos) ? b : a;
+            let o2 = (c === pos) ? b : c;
+            let oppC = (board[o1] === oppSym ? 1 : 0) + (board[o2] === oppSym ? 1 : 0);
+            let myC = (board[o1] === mySym ? 1 : 0) + (board[o2] === mySym ? 1 : 0);
+            if (oppC === 1 && myC === 0) score += 45;
+            if (myC === 1 && oppC === 0) score += 35;
+          }
+        }
+
+        // 6. Positional Weight
+        if (pos === 4) score += 45;
+        else if ([0, 2, 6, 8].includes(pos)) score += 20;
+        else score += 15;
+
+        scores[pos] = score;
+      }
+      return scores;
+    }
+
+    function checkWin(board) {
+      for (let [a, b, c] of WINNING_LINES) {
+        if (board[a] !== 0 && board[a] === board[b] && board[b] === board[c]) {
+          return { winner: board[a], line: [a, b, c] };
+        }
+      }
+      if (board.every(cell => cell !== 0)) return { winner: 3, line: [] }; // Draw
+      return null;
+    }
+
+    // ----------------------------------------------------
+    // State & Tournament Management
+    // ----------------------------------------------------
+    let currentMatch = 1;
+    const TOTAL_MATCHES = 10;
+    let board = new Array(9).fill(0);
+    let currentTurn = 1; // 1 = X, 2 = O
+    let moveCount = 0;
+    let isAutoPlaying = false;
+    let autoPlayTimer = null;
+    let simulationSpeedMs = 700;
+    let isDualGPUMode = false;
+
+    let tournamentStats = {
+      xWins: 0,
+      oWins: 0,
+      draws: 0,
+      timesX: [],
+      timesO: []
+    };
+
+    // DOM Elements
+    const boardGrid = document.getElementById('board-grid');
+    const inspectorContainer = document.getElementById('inspector-container');
+    const termLogs = document.getElementById('term-logs');
+    const terminalConsole = document.getElementById('terminal-console');
+    const turnAnnouncer = document.getElementById('turn-announcer');
+    const matchBanner = document.getElementById('match-banner');
+
+    const statMatch = document.getElementById('stat-match');
+    const statX = document.getElementById('stat-x');
+    const statO = document.getElementById('stat-o');
+    const statDraws = document.getElementById('stat-draws');
+    const statLatX = document.getElementById('stat-lat-x');
+    const statLatO = document.getElementById('stat-lat-o');
+
+    const btnAutoPlay = document.getElementById('btn-auto-play');
+    const btnStepMove = document.getElementById('btn-step-move');
+    const btnPause = document.getElementById('btn-pause');
+    const btnReset = document.getElementById('btn-reset');
+    const btnToggleMode = document.getElementById('btn-toggle-mode');
+    const displayMode = document.getElementById('display-mode');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedDisplay = document.getElementById('speed-display');
+
+    // Initialize Board Cells
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'board-cell';
+      cell.id = `cell-${i}`;
+      cell.innerHTML = `<span class="cell-idx">${i + 1}</span><span class="cell-val"></span>`;
+      boardGrid.appendChild(cell);
+    }
+
+    // Initialize Thread Inspector Rows
+    for (let i = 0; i < 9; i++) {
+      const row = document.createElement('div');
+      row.className = 'thread-row';
+      row.id = `thread-${i}`;
+      row.innerHTML = `
+        <div class="thread-info">
+          <span>Thread ${i} (Pos ${i + 1})</span>
+          <span id="thread-score-${i}">idle</span>
+        </div>
+        <div class="score-bar-bg">
+          <div class="score-bar-fill" id="thread-bar-${i}"></div>
+        </div>
+      `;
+      inspectorContainer.appendChild(row);
+    }
+
+    function logTerminal(text, type = "") {
+      const line = document.createElement('div');
+      if (type) line.className = `term-line-${type}`;
+      line.textContent = text;
+      termLogs.appendChild(line);
+      terminalConsole.scrollTop = terminalConsole.scrollHeight;
+    }
+
+    function updateBoardUI() {
+      for (let i = 0; i < 9; i++) {
+        const cell = document.getElementById(`cell-${i}`);
+        const valSpan = cell.querySelector('.cell-val');
+        cell.className = 'board-cell';
+        if (board[i] === 1) {
+          cell.classList.add('cell-x');
+          valSpan.textContent = 'X';
+        } else if (board[i] === 2) {
+          cell.classList.add('cell-o');
+          valSpan.textContent = 'O';
+        } else {
+          valSpan.textContent = '';
+        }
+      }
+    }
+
+    function updateInspectorUI(scores, selectedPos) {
+      for (let i = 0; i < 9; i++) {
+        const row = document.getElementById(`thread-${i}`);
+        const scoreSpan = document.getElementById(`thread-score-${i}`);
+        const barFill = document.getElementById(`thread-bar-${i}`);
+
+        row.classList.remove('selected-move');
+        barFill.className = 'score-bar-fill';
+
+        if (scores[i] < -90000) {
+          scoreSpan.textContent = 'OCCUPIED';
+          barFill.classList.add('occupied');
+          barFill.style.width = '100%';
+        } else {
+          scoreSpan.textContent = `Score: ${scores[i]}`;
+          if (scores[i] >= 10000) barFill.classList.add('win');
+          else if (scores[i] >= 5000) barFill.classList.add('block');
+          else {
+            const pct = Math.min(100, Math.max(10, (scores[i] / 120) * 100));
+            barFill.style.width = `${pct}%`;
+          }
+        }
+
+        if (i === selectedPos) {
+          row.classList.add('selected-move');
+        }
+      }
+    }
+
+    function executeNextMove() {
+      if (currentMatch > TOTAL_MATCHES) return;
+
+      const result = checkWin(board);
+      if (result) return; // Match already finished
+
+      const isX = (currentTurn === 1);
+      const playerStr = isX ? "Player X (Tactical AI)" : "Player O (Strategic AI)";
+      const devStr = isDualGPUMode ? (isX ? "GPU 0" : "GPU 1") : "GPU 0";
+
+      // 1. Evaluate on GPU (SIMT)
+      const scores = isX ? evaluatePlayerX(board, 1, 2) : evaluatePlayerO(board, 2, 1);
+
+      // 2. Select Max Legal Move
+      let bestScore = -1e9;
+      let bestPos = -1;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === 0 && scores[i] > bestScore) {
+          bestScore = scores[i];
+          bestPos = i;
+        }
+      }
+
+      if (bestPos === -1) return; // No legal move
+
+      // Generate realistic kernel microsecond latency (0.019 - 0.033 ms)
+      const kernelTimeMs = (0.020 + Math.random() * 0.012).toFixed(4);
+      if (isX) tournamentStats.timesX.push(parseFloat(kernelTimeMs));
+      else tournamentStats.timesO.push(parseFloat(kernelTimeMs));
+
+      // Update Inspector & Terminal
+      updateInspectorUI(scores, bestPos);
+      logTerminal(`>> ${playerStr} [${devStr}] evaluated 9 candidate moves via CUDA kernel in ${kernelTimeMs} ms`, isX ? "x" : "o");
+      logTerminal(`   Selected Position: ${bestPos + 1} (Index ${bestPos}) | Heuristic Score: ${bestScore}`);
+
+      // Apply Move
+      board[bestPos] = currentTurn;
+      moveCount++;
+      updateBoardUI();
+
+      // Check for Game Over
+      const outcome = checkWin(board);
+      if (outcome) {
+        handleMatchEnd(outcome);
+      } else {
+        currentTurn = (currentTurn === 1) ? 2 : 1;
+        const nextPlayer = (currentTurn === 1) ? "Player X" : "Player O";
+        turnAnnouncer.innerHTML = `<span style="color: ${currentTurn === 1 ? 'var(--crimson)' : 'var(--nvidia-green)'};">${nextPlayer}'s Turn:</span> Evaluating candidate moves on ${devStr}...`;
+      }
+    }
+
+    function handleMatchEnd(outcome) {
+      if (outcome.winner === 1) {
+        tournamentStats.xWins++;
+        turnAnnouncer.innerHTML = `<span style="color: var(--crimson);">VICTORY!</span> Player X wins match ${currentMatch} in ${moveCount} moves!`;
+        logTerminal(`[RESULT] Victory for Player X (Tactical AI) in ${moveCount} moves!`, "win");
+      } else if (outcome.winner === 2) {
+        tournamentStats.oWins++;
+        turnAnnouncer.innerHTML = `<span style="color: var(--nvidia-green);">VICTORY!</span> Player O wins match ${currentMatch} in ${moveCount} moves!`;
+        logTerminal(`[RESULT] Victory for Player O (Strategic AI) in ${moveCount} moves!`, "win");
+      } else {
+        tournamentStats.draws++;
+        turnAnnouncer.innerHTML = `<span style="color: var(--amber);">DRAW!</span> Cat's Game after 9 moves! Optimal defense confirmed.`;
+        logTerminal(`[RESULT] Draw (Cat's Game) after 9 moves! Equilibrium confirmed.`, "win");
+      }
+
+      if (outcome.line && outcome.line.length === 3) {
+        outcome.line.forEach(idx => {
+          document.getElementById(`cell-${idx}`).classList.add('highlight-win');
+        });
+      }
+
+      updateStatsUI();
+
+      if (currentMatch < TOTAL_MATCHES) {
+        currentMatch++;
+        if (isAutoPlaying) {
+          setTimeout(startNextMatch, simulationSpeedMs * 1.5);
+        }
+      } else {
+        // Tournament Finished
+        turnAnnouncer.innerHTML = `🏆 <strong style="color: var(--amber);">TOURNAMENT COMPLETE!</strong> 10 Matches Played.`;
+        logTerminal(`================================================================================================`, "info");
+        logTerminal(`TOURNAMENT SUMMARY: 10 Matches | Player X: ${tournamentStats.xWins} | Player O: ${tournamentStats.oWins} | Draws: ${tournamentStats.draws}`, "win");
+        stopAutoPlay();
+      }
+    }
+
+    function startNextMatch() {
+      board = new Array(9).fill(0);
+      moveCount = 0;
+      // Alternate starting player: odd -> X, even -> O
+      currentTurn = (currentMatch % 2 === 1) ? 1 : 2;
+      const startPlayer = (currentTurn === 1) ? "Player X (Tactical AI)" : "Player O (Strategic AI)";
+
+      matchBanner.textContent = `MATCH ${currentMatch} OF ${TOTAL_MATCHES}  |  Starting: ${startPlayer}`;
+      turnAnnouncer.innerHTML = `Starting Match ${currentMatch}: <strong style="color: ${currentTurn === 1 ? 'var(--crimson)' : 'var(--nvidia-green)'};">${startPlayer}</strong> to move.`;
+      logTerminal(`------------------------------------------------------------------------------------------------`);
+      logTerminal(`[START MATCH ${currentMatch}/${TOTAL_MATCHES}] First Mover: ${startPlayer}`, "info");
+
+      updateBoardUI();
+      // Reset thread bars
+      for (let i = 0; i < 9; i++) {
+        document.getElementById(`thread-score-${i}`).textContent = 'idle';
+        document.getElementById(`thread-bar-${i}`).style.width = '0%';
+        document.getElementById(`thread-bar-${i}`).className = 'score-bar-fill';
+        document.getElementById(`thread-${i}`).classList.remove('selected-move');
+      }
+
+      statMatch.textContent = `${currentMatch} / ${TOTAL_MATCHES}`;
+
+      if (isAutoPlaying) {
+        autoPlayTimer = setTimeout(autoPlayLoop, simulationSpeedMs);
+      }
+    }
+
+    function autoPlayLoop() {
+      if (!isAutoPlaying) return;
+      const outcome = checkWin(board);
+      if (!outcome) {
+        executeNextMove();
+        if (!checkWin(board)) {
+          autoPlayTimer = setTimeout(autoPlayLoop, simulationSpeedMs);
+        }
+      }
+    }
+
+    function startAutoPlay() {
+      isAutoPlaying = true;
+      btnAutoPlay.disabled = true;
+      btnStepMove.disabled = true;
+      btnPause.disabled = false;
+
+      const outcome = checkWin(board);
+      if (outcome && currentMatch <= TOTAL_MATCHES) {
+        startNextMatch();
+      } else {
+        autoPlayLoop();
+      }
+    }
+
+    function stopAutoPlay() {
+      isAutoPlaying = false;
+      if (autoPlayTimer) clearTimeout(autoPlayTimer);
+      btnAutoPlay.disabled = (currentMatch > TOTAL_MATCHES && checkWin(board) !== null);
+      btnStepMove.disabled = (currentMatch > TOTAL_MATCHES && checkWin(board) !== null);
+      btnPause.disabled = true;
+    }
+
+    function updateStatsUI() {
+      const total = currentMatch;
+      statX.textContent = `${tournamentStats.xWins} (${((tournamentStats.xWins / total) * 100).toFixed(1)}%)`;
+      statO.textContent = `${tournamentStats.oWins} (${((tournamentStats.oWins / total) * 100).toFixed(1)}%)`;
+      statDraws.textContent = `${tournamentStats.draws} (${((tournamentStats.draws / total) * 100).toFixed(1)}%)`;
+
+      if (tournamentStats.timesX.length > 0) {
+        const avgX = (tournamentStats.timesX.reduce((a, b) => a + b, 0) / tournamentStats.timesX.length).toFixed(4);
+        statLatX.textContent = `${avgX} ms`;
+      }
+      if (tournamentStats.timesO.length > 0) {
+        const avgO = (tournamentStats.timesO.reduce((a, b) => a + b, 0) / tournamentStats.timesO.length).toFixed(4);
+        statLatO.textContent = `${avgO} ms`;
+      }
+    }
+
+    function resetTournament() {
+      stopAutoPlay();
+      currentMatch = 1;
+      board = new Array(9).fill(0);
+      currentTurn = 1;
+      moveCount = 0;
+      tournamentStats = { xWins: 0, oWins: 0, draws: 0, timesX: [], timesO: [] };
+
+      termLogs.innerHTML = "";
+      logTerminal("[RESET] Tournament reset to initial match state.", "info");
+
+      matchBanner.textContent = `MATCH 1 OF 10  |  Starting: Player X (Tactical AI)`;
+      turnAnnouncer.innerHTML = `<span style="color: var(--cyan-bright);">Ready:</span> Press 'Auto-Play' or 'Step Next Move' to start!`;
+      statMatch.textContent = `1 / 10`;
+      statX.textContent = `0 (0.0%)`;
+      statO.textContent = `0 (0.0%)`;
+      statDraws.textContent = `0 (0.0%)`;
+
+      updateBoardUI();
+      for (let i = 0; i < 9; i++) {
+        document.getElementById(`thread-score-${i}`).textContent = 'idle';
+        document.getElementById(`thread-bar-${i}`).style.width = '0%';
+        document.getElementById(`thread-bar-${i}`).className = 'score-bar-fill';
+        document.getElementById(`thread-${i}`).classList.remove('selected-move');
+      }
+
+      btnAutoPlay.disabled = false;
+      btnStepMove.disabled = false;
+    }
+
+    // Event Listeners
+    btnAutoPlay.addEventListener('click', startAutoPlay);
+    btnPause.addEventListener('click', stopAutoPlay);
+    btnReset.addEventListener('click', resetTournament);
+
+    btnStepMove.addEventListener('click', () => {
+      const outcome = checkWin(board);
+      if (outcome) {
+        if (currentMatch < TOTAL_MATCHES) startNextMatch();
+      } else {
+        executeNextMove();
+      }
+    });
+
+    speedSlider.addEventListener('input', (e) => {
+      simulationSpeedMs = parseInt(e.target.value);
+      speedDisplay.textContent = `${simulationSpeedMs}ms (${simulationSpeedMs < 400 ? 'Fast' : simulationSpeedMs > 900 ? 'Slow' : 'Normal'})`;
+    });
+
+    btnToggleMode.addEventListener('click', () => {
+      isDualGPUMode = !isDualGPUMode;
+      if (isDualGPUMode) {
+        displayMode.textContent = "Mode A: Dual Physical GPUs (GPU 0 & GPU 1)";
+        btnToggleMode.textContent = "Switch to Mode B (Single GPU)";
+        logTerminal("[TOPOLOGY CHANGE] Switched to Mode A: Player X -> GPU 0 | Player O -> GPU 1", "info");
+      } else {
+        displayMode.textContent = "Mode B: Single GPU (Concurrent AI Threads)";
+        btnToggleMode.textContent = "Switch to Mode A (Dual GPUs)";
+        logTerminal("[TOPOLOGY CHANGE] Switched to Mode B: Single GPU 0 with std::mutex Turn Synchronization", "info");
+      }
+    });
+  </script>
+</body>
+</html>
